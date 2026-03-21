@@ -8,3 +8,8 @@ export const login = (form) => {
     password: form.password,
   });
 };
+
+// 2. 获取个人信息 -> 于首页渲染
+export const getUser = () => {
+  return request.get("/auth/currentUser");
+};
