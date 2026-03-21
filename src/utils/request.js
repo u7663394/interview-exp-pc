@@ -1,5 +1,6 @@
 // 封装请求模块
 import axios from "axios";
+import { Message } from "element-ui";
 
 // 1. 创建 axios 实例
 const request = axios.create({
@@ -23,6 +24,10 @@ request.interceptors.response.use(
     return response.data;
   },
   function (error) {
+    // 统一处理错误提示
+    if (error.response) {
+      Message.error(error.response.data.message);
+    }
     return Promise.reject(error);
   }
 );

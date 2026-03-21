@@ -59,7 +59,10 @@ export default {
       try {
         await myForm.validate();
         // 2. 通过则调用 vuex 中的 action
-        this.$store.dispatch("user/loginAction", this.form);
+        await this.$store.dispatch("user/loginAction", this.form);
+        // 3. 成功提示 + 跳转首页
+        this.$message.success("登陆成功");
+        this.$router.push("/");
       } catch (error) {
         console.log(error);
       }
