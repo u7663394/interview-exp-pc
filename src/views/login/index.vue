@@ -54,11 +54,12 @@ export default {
   },
   methods: {
     async login() {
-      // 登陆时先校验
+      // 1. 登陆时先校验
       const myForm = this.$refs.form;
       try {
         await myForm.validate();
-        alert("通过校验");
+        // 2. 通过则调用 vuex 中的 action
+        this.$store.dispatch("user/loginAction", this.form);
       } catch (error) {
         console.log(error);
       }
