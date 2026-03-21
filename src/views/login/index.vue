@@ -3,7 +3,7 @@
     <el-card class="el-card">
       <template #header>面经运营后台</template>
       <!-- Form -->
-      <el-form :model="form" :rules="rules">
+      <el-form ref="form" :model="form" :rules="rules">
         <el-form-item label="用户名: " prop="username">
           <el-input v-model="form.username" placeholder="请输入用户名" />
         </el-form-item>
@@ -15,8 +15,8 @@
           />
         </el-form-item>
         <el-form-item class="tc">
-          <el-button type="primary">登录</el-button>
-          <el-button>重置</el-button>
+          <el-button type="primary" @click="login">登录</el-button>
+          <el-button @click="reset">重置</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -51,6 +51,23 @@ export default {
         ],
       },
     };
+  },
+  methods: {
+    async login() {
+      // 登陆时先校验
+      const myForm = this.$refs.form;
+      try {
+        await myForm.validate();
+        alert("通过校验");
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    reset() {
+      // 重制表单
+      const myForm = this.$refs.form;
+      myForm.resetFields();
+    },
   },
 };
 </script>
