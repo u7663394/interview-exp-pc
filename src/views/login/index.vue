@@ -2,12 +2,17 @@
   <div class="login-page">
     <el-card class="el-card">
       <template #header>面经运营后台</template>
-      <el-form>
-        <el-form-item label="用户名: ">
-          <el-input placeholder="请输入用户名" />
+      <!-- Form -->
+      <el-form :model="form" :rules="rules">
+        <el-form-item label="用户名: " prop="username">
+          <el-input v-model="form.username" placeholder="请输入用户名" />
         </el-form-item>
-        <el-form-item label="密码: ">
-          <el-input placeholder="请输入密码" />
+        <el-form-item label="密码: " prop="password">
+          <el-input
+            type="password"
+            v-model="form.password"
+            placeholder="请输入密码"
+          />
         </el-form-item>
         <el-form-item class="tc">
           <el-button type="primary">登录</el-button>
@@ -21,6 +26,32 @@
 <script>
 export default {
   name: "LoginIndex",
+  data() {
+    return {
+      form: {
+        username: "",
+        password: "",
+      },
+      rules: {
+        username: [
+          {
+            required: true,
+            message: "请输入用户名",
+            trigger: ["blur", "change"],
+          },
+          { min: 5, max: 11, message: "长度需为 5~11 位" },
+        ],
+        password: [
+          {
+            required: true,
+            message: "请输入密码",
+            trigger: ["blur", "change"],
+          },
+          { pattern: /^\w{5,12}$/, message: "长度需为 5~12 位" },
+        ],
+      },
+    };
+  },
 };
 </script>
 
