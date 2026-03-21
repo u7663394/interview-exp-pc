@@ -1,5 +1,6 @@
 <template>
   <el-container class="layout-page">
+    <!-- 侧边栏 -->
     <el-aside width="200px">
       <div class="logo">面经平台</div>
       <el-menu
@@ -20,6 +21,7 @@
       </el-menu>
     </el-aside>
     <el-container>
+      <!-- Header -->
       <el-header>
         <div class="user">
           <el-avatar :size="36" :src="avatar"></el-avatar>
@@ -27,7 +29,7 @@
         </div>
         <div class="logout">
           <el-popconfirm
-            title="您确认退出黑马面运营后台吗？"
+            title="您确认退出面经运营后台吗?"
             @confirm="handleConfirm"
           >
             <i
@@ -38,6 +40,7 @@
           </el-popconfirm>
         </div>
       </el-header>
+      <!-- 主体区域 -->
       <el-main>
         <router-view></router-view>
       </el-main>
@@ -47,6 +50,7 @@
 
 <script>
 import { getUser } from "@/api/user";
+import { delToken } from "@/utils/storage";
 export default {
   name: "LayoutIndex",
   data() {
@@ -65,6 +69,10 @@ export default {
       this.name = data.name;
     },
     handleConfirm() {
+      // 1. 清空 token (vuex + localStorage)
+      this.$store.commit("user/logout");
+      delToken();
+      // 2. 跳转
       this.$router.push("/login");
     },
   },

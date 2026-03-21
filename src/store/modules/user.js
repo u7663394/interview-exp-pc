@@ -16,6 +16,9 @@ export default {
       // 2. 存入 localStorage
       setToken(newToken);
     },
+    logout(state) {
+      state.token = "";
+    },
   },
   actions: {
     async loginAction(context, form) {
