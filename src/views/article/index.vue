@@ -32,6 +32,15 @@
           </template>
         </el-table-column>
       </el-table>
+      <!-- 分页组件 -->
+      <el-pagination
+        @current-change="handleCurrentChange"
+        :page-size="pageSize"
+        :current-page="current"
+        :total="total"
+        layout="prev, pager, next"
+        background
+      ></el-pagination>
     </el-card>
   </div>
 </template>
@@ -65,6 +74,11 @@ export default {
     },
     del(id) {
       console.log(id);
+    },
+    // 当前页变化
+    handleCurrentChange(newPage) {
+      this.current = newPage;
+      this.initData();
     },
   },
 };
