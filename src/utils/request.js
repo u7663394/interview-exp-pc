@@ -8,7 +8,7 @@ import router from "@/router";
 // 1. 创建 axios 实例
 const request = axios.create({
   baseURL: "http://interview-api-t.itheima.net/",
-  timeout: 5000,
+  timeout: 7000,
 });
 
 // 2. 请求拦截器

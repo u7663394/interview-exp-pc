@@ -10,7 +10,13 @@
       <template #header>
         <div class="header">
           <span>共 {{ total }} 条记录</span>
-          <el-button icon="el-icon-plus" size="small" type="primary" round>
+          <el-button
+            @click="openDrawer('add')"
+            icon="el-icon-plus"
+            size="small"
+            type="primary"
+            round
+          >
             添加面经
           </el-button>
         </div>
@@ -25,8 +31,14 @@
         <el-table-column label="编辑">
           <template #default="scope">
             <div class="actions">
-              <i class="el-icon-view"></i>
-              <i class="el-icon-edit-outline"></i>
+              <i
+                class="el-icon-view"
+                @click="openDrawer('preview', scope.row.id)"
+              ></i>
+              <i
+                class="el-icon-edit-outline"
+                @click="openDrawer('edit', scope.row.id)"
+              ></i>
               <i class="el-icon-delete" @click="del(scope.row.id)"></i>
             </div>
           </template>
@@ -42,6 +54,16 @@
         background
       ></el-pagination>
     </el-card>
+    <!-- 抽屉区域 -->
+    <el-drawer
+      title="I am title"
+      :visible.sync="isShowDrawer"
+      direction="rtl"
+      :before-close="handleClose"
+      size="55%"
+    >
+      <span>test</span>
+    </el-drawer>
   </div>
 </template>
 
@@ -56,6 +78,7 @@ export default {
       current: 25,
       pageSize: 10,
       total: 0,
+      isShowDrawer: false,
     };
   },
   created() {
@@ -79,6 +102,22 @@ export default {
     handleCurrentChange(newPage) {
       this.current = newPage;
       this.initData();
+    },
+    // 打开抽屉方法
+    openDrawer(type, id) {
+      console.log(type, id);
+      this.isShowDrawer = true;
+    },
+    // 关闭抽屉前
+    handleClose(done) {
+      this.$confirm("您确认要关闭吗?")
+        .then(() => {
+          // 1. 确认 -> 关闭
+          done();
+        })
+        .catch(() => {
+          // 2. 取消 -> 保留
+        });
     },
   },
 };
