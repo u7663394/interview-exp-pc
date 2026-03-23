@@ -56,19 +56,38 @@
     </el-card>
     <!-- 抽屉区域 -->
     <el-drawer
-      title="I am title"
+      :title="drawerTitle"
       :visible.sync="isShowDrawer"
       direction="rtl"
       :before-close="handleClose"
       size="55%"
     >
-      <span>test</span>
+      <el-form ref="form" label-width="80px" :model="form" :rules="rules">
+        <el-form-item label="标题" prop="stem">
+          <el-input v-model="form.stem" placeholder="请输入面经标题"></el-input>
+        </el-form-item>
+        <el-form-item label="内容" prop="content">
+          <quill-editor
+            @blur="$refs.form.validateField('content')"
+            v-model="form.content"
+          ></quill-editor>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary">确认</el-button>
+          <el-button>取消</el-button>
+        </el-form-item>
+      </el-form>
     </el-drawer>
   </div>
 </template>
 
 <script>
 import { getArticleList } from "@/api/article";
+// 导入富文本编辑器
+import "quill/dist/quill.core.css";
+import "quill/dist/quill.snow.css";
+import "quill/dist/quill.bubble.css";
+import { quillEditor } from "vue-quill-editor";
 
 export default {
   name: "article-page",
@@ -79,10 +98,32 @@ export default {
       pageSize: 10,
       total: 0,
       isShowDrawer: false,
+      drawerType: "add",
+      form: {
+        stem: "",
+        content: "",
+      },
+      rules: {
+        stem: [{ required: true, message: "请输入标题", trigger: "blur" }],
+        content: [{ required: true, message: "请输入内容", trigger: "blur" }],
+      },
     };
   },
   created() {
     this.initData();
+  },
+  components: {
+    quillEditor,
+  },
+  computed: {
+    drawerTitle() {
+      const map = {
+        add: "添加面经",
+        preview: "面经预览",
+        edit: "编辑面经",
+      };
+      return map[this.drawerType] || "标题";
+    },
   },
   methods: {
     async initData() {
@@ -105,8 +146,9 @@ export default {
     },
     // 打开抽屉方法
     openDrawer(type, id) {
-      console.log(type, id);
+      console.log(id);
       this.isShowDrawer = true;
+      this.drawerType = type;
     },
     // 关闭抽屉前
     handleClose(done) {
