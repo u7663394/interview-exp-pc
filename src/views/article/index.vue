@@ -62,7 +62,18 @@
       :before-close="handleClose"
       size="55%"
     >
-      <el-form ref="form" label-width="80px" :model="form" :rules="rules">
+      <!-- 预览不需要表单 -->
+      <div v-if="drawerType === 'preview'">
+        <h3 style="padding-left: 20px">{{ form.stem }}</h3>
+        <div v-html="form.content" class="article-preview"></div>
+      </div>
+      <el-form
+        v-else
+        ref="form"
+        label-width="80px"
+        :model="form"
+        :rules="rules"
+      >
         <el-form-item label="标题" prop="stem">
           <el-input v-model="form.stem" placeholder="请输入面经标题"></el-input>
         </el-form-item>
@@ -210,7 +221,9 @@ export default {
       this.initData();
     },
     closeDrawer() {
-      this.$refs.form.resetFields();
+      if (this.drawerType !== "preview") {
+        this.$refs.form.resetFields();
+      }
       this.articleId = -1;
       this.isShowDrawer = false;
     },
