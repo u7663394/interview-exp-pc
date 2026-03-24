@@ -73,8 +73,8 @@
           ></quill-editor>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary">确认</el-button>
-          <el-button>取消</el-button>
+          <el-button type="primary" @click="submit">确认</el-button>
+          <el-button @click="handleClose">取消</el-button>
         </el-form-item>
       </el-form>
     </el-drawer>
@@ -82,7 +82,7 @@
 </template>
 
 <script>
-import { getArticleList } from "@/api/article";
+import { createArticle, getArticleList } from "@/api/article";
 // 导入富文本编辑器
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
@@ -151,15 +151,33 @@ export default {
       this.drawerType = type;
     },
     // 关闭抽屉前
-    handleClose(done) {
+    handleClose() {
       this.$confirm("您确认要关闭吗?")
         .then(() => {
           // 1. 确认 -> 关闭
-          done();
+          this.closeDrawer();
         })
         .catch(() => {
           // 2. 取消 -> 保留
         });
+    },
+    // 添加文章
+    async submit() {
+      // 1. 校验表单
+      await this.$refs.form.validate();
+      // 2. 请求
+      await createArticle(this.form);
+      // 3. 提示
+      this.$message.success("添加成功");
+      // 4. 关闭抽屉 + 重置表单
+      this.closeDrawer();
+      // 5. 重新渲染
+      this.current = 1;
+      this.initData();
+    },
+    closeDrawer() {
+      this.$refs.form.resetFields();
+      this.isShowDrawer = false;
     },
   },
 };

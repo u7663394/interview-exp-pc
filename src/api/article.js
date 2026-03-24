@@ -10,3 +10,11 @@ export const getArticleList = (data) => {
     },
   });
 };
+
+// 2. 添加文章请求
+export const createArticle = (info) => {
+  return request.post("/admin/interview/create", {
+    stem: info.stem,
+    content: info.content,
+  });
+};
