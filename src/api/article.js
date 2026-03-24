@@ -26,3 +26,20 @@ export const removeArticle = (id) => {
     data: { id },
   });
 };
+
+// 4. 获取文章内容请求
+export const showArticle = (id) => {
+  return request.get("/admin/interview/show", {
+    // 查询参数 query 传参 -> params
+    params: { id },
+  });
+};
+
+// 5. 修改文章内容请求
+export const updateArticle = (info) => {
+  return request.put("/admin/interview/update", {
+    id: info.id,
+    stem: info.stem,
+    content: info.content,
+  });
+};

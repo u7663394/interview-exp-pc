@@ -82,7 +82,13 @@
 </template>
 
 <script>
-import { createArticle, getArticleList, removeArticle } from "@/api/article";
+import {
+  createArticle,
+  getArticleList,
+  removeArticle,
+  showArticle,
+  updateArticle,
+} from "@/api/article";
 // 导入富文本编辑器
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
@@ -107,6 +113,7 @@ export default {
         stem: [{ required: true, message: "请输入标题", trigger: "blur" }],
         content: [{ required: true, message: "请输入内容", trigger: "blur" }],
       },
+      articleId: -1,
     };
   },
   created() {
@@ -153,10 +160,17 @@ export default {
       this.initData();
     },
     // 打开抽屉方法
-    openDrawer(type, id) {
-      console.log(id);
+    async openDrawer(type, id) {
       this.isShowDrawer = true;
       this.drawerType = type;
+      this.articleId = id;
+      // 1. 如果是预览或编辑，则调用显示请求
+      if (type !== "add") {
+        const res = await showArticle(id);
+        // 2. 存入数据显示
+        this.form.stem = res.data.stem;
+        this.form.content = res.data.content;
+      }
     },
     // 关闭抽屉前
     handleClose() {
@@ -169,14 +183,26 @@ export default {
           // 2. 取消 -> 保留
         });
     },
-    // 添加文章
+    // 添加文章 + 修改文章
     async submit() {
       // 1. 校验表单
       await this.$refs.form.validate();
-      // 2. 请求
-      await createArticle(this.form);
-      // 3. 提示
-      this.$message.success("添加成功");
+      if (this.drawerType === "add") {
+        // 2. 添加请求
+        await createArticle(this.form);
+        // 3. 添加提示
+        this.$message.success("添加成功");
+      }
+      if (this.drawerType === "edit") {
+        // 2. 编辑请求
+        await updateArticle({
+          id: this.articleId,
+          stem: this.form.stem,
+          content: this.form.content,
+        });
+        // 3. 编辑提示
+        this.$message.success("修改成功");
+      }
       // 4. 关闭抽屉 + 重置表单
       this.closeDrawer();
       // 5. 重新渲染
@@ -185,6 +211,7 @@ export default {
     },
     closeDrawer() {
       this.$refs.form.resetFields();
+      this.articleId = -1;
       this.isShowDrawer = false;
     },
   },
