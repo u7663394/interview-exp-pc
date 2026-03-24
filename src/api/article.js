@@ -18,3 +18,11 @@ export const createArticle = (info) => {
     content: info.content,
   });
 };
+
+// 3. 删除文章请求
+export const removeArticle = (id) => {
+  return request.delete("/admin/interview/remove", {
+    // 请求体 body 传参 -> data
+    data: { id },
+  });
+};

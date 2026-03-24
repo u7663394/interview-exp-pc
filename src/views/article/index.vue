@@ -82,7 +82,7 @@
 </template>
 
 <script>
-import { createArticle, getArticleList } from "@/api/article";
+import { createArticle, getArticleList, removeArticle } from "@/api/article";
 // 导入富文本编辑器
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
@@ -136,8 +136,16 @@ export default {
       this.total = res.data.total;
       this.tableData = res.data.rows;
     },
-    del(id) {
-      console.log(id);
+    async del(id) {
+      // 1. 调用删除请求
+      await removeArticle(id);
+      // 2. 提示
+      this.$message.success("删除成功");
+      // 3. 重新渲染
+      if (this.tableData.length === 1 && this.current > 1) {
+        this.current--;
+      }
+      this.initData();
     },
     // 当前页变化
     handleCurrentChange(newPage) {
